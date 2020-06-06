@@ -1,55 +1,76 @@
 const models = require('../../models');
 
-exports.get_products = (_, res) => {
-    models.Products.findAll({
 
-    }).then((products) => {
-        // res.render('admin/products.html', { products: products });
-        // javascript는 key와 value의 이름이 같을 경우 key명만 작성해도 됨.
+exports.get_products = async (_, res) => {
+    try {
+        const products = await models.Products.findAll();
         res.render('admin/products.html', { products });
-    });
+
+    } catch(err) {
+        console.error(err);
+    }
 }
 
 exports.get_products_write = (_, res) => {
     res.render('admin/write.html');
 }
 
-exports.post_products_write = (req, res) => {
-    // models.Products.create({
-    //     name: req.body.name,
-    //     price: req.body.price,
-    //     description: req.body.description
-    // }).then( () => {
-    //     res.redirect('/admin/products');
-    // });
-    // req.body의 값이 json key필드명에 맞춰서 전달되므로 위방법과 아래 방법이 동일함
-    models.Products.create(req.body).then(() => {
+exports.post_products_write = async (req, res) => {
+    try {
+        await models.Products.create(req.body);
         res.redirect('/admin/products');
-    });
-}
 
-exports.get_products_detail = (req, res) => {
-    // req.params.id
-    models.Products.findByPk(req.params.id).then((product) => {
-        res.render('admin/detail.html', { product });
-    });
-}
-
-exports.get_products_edit = (req, res) => {
-    models.Products.findByPk(req.params.id).then((product) => {
-        res.render('admin/write.html', { product });
-    })
-}
-
-exports.post_products_edit = (req, res) => {
-    models.Products.update({
-        name: req.body.name,
-        price: req.body.price,
-        description: req.body.description
-    }, {
-        where: { id: req.params.id }
+    } catch(err) {
+        console.error(err);
     }
-    ).then(() => {
+}
+
+exports.get_products_detail = async (req, res) => {
+    try {
+        // req.params.id
+        const product = await models.Products.findByPk(req.params.id);
+        res.render('admin/detail.html', { product });
+
+    } catch(err) {
+        console.error(err);
+    }
+}
+
+exports.get_products_edit = async (req, res) => {
+    try{
+        const product = await models.Products.findByPk(req.params.id);
+        res.render('admin/write.html', { product });
+
+    } catch(err) {
+        console.error(err);
+    }
+}
+
+exports.post_products_edit = async (req, res) => {
+    try {
+        await models.Products.update(
+            req.body, 
+            {
+                where: { id: req.params.id }
+            }
+        );
+
         res.redirect('/admin/Products/detail/' + req.params.id);
-    });
+
+    } catch(err) {
+        console.error(err);
+    }
+}
+
+exports.get_products_delete = async (req, res) => {
+    try {
+        await models.Products.destroy({
+            where: { id: req.params.id }
+        });
+
+        res.redirect('/admin/products');
+
+    } catch(err) {
+        console.error(err);
+    }
 }
