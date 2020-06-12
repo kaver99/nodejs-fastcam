@@ -1,5 +1,7 @@
 import React from 'react';
 import TodoComponent from './component/todo/Todo';
+import HookSample from './example/HookSample';
+import UseEffectSample from './example/UseEffectSample';
 
 import './App.css';
 
@@ -11,7 +13,9 @@ function App() {
       {/* <header className="App-header">
         Hello World!
       </header> */}
-      <TodoComponent />
+      {/* <HookSample /> */}
+      {/* <TodoComponent /> */}
+      <UseEffectSample />
     </div>
   );
 }
