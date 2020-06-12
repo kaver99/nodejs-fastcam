@@ -7,11 +7,15 @@ export default function UseEffectSample() {
 
     useEffect(() => {
         let completed = false;
-        async function get() {
-            const result = await axios(`https://hn.algolia.com/api/v1/search?query=${query}`);
-            if(!completed) setData(result.data);
+        try {
+            async function get() {
+                const result = await axios(`https://hn.algolia.com/api/v1/search?query=${query}`);
+                if(!completed) setData(result.data);
+            }
+            get();
+        } catch(err) {
+            console.error(err);
         }
-        get();
         return () => {
             completed = true;
         }
