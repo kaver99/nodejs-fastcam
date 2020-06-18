@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 const Childcomponent = styled.div`
   display: flex;
+  color: ${props => props.bgColor === true ? '#000' : '#fff'};
 `
 
 const Parendscomponent = styled(Childcomponent)`
