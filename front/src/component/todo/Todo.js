@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState } from 'react';
 
 // redux
 import { bindActionCreators } from 'redux';
@@ -23,21 +23,19 @@ const Todo = ({ todo,  index, completeTodo, removeTodo }) => {
   );
 }
 
-const TodoForm = ({ addTodo }) => {
+const TodoForm = ({ addTodo, inputRef }) => {
   const [value, setValue] = useState('');
 
   // SUBMIT Event Handle
   const handleSubmit = e => {
     e.preventDefault(); // Event Bubbling 현상방지를 위해 적용(이벤트가 중복으로 실행되는 것을 방지)
     if(!value) return
-    setTimeout(() => {
-      addTodo(value);
-    }, 1000);
+    addTodo(value);
     setValue('');
   }
   return (
     <form onSubmit={handleSubmit}>
-      <input type="text" className="input" value={value} onChange={e => setValue(e.target.value)} placeholder="Todo를 작성해 주세요." />
+      <input type="text" className="input" value={value} onChange={e => setValue(e.target.value)} ref={inputRef}placeholder="Todo를 작성해 주세요." />
     </form>
   );
 }
@@ -62,6 +60,9 @@ function TodoComponent(props) {
   // const [todo, setTodo] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const inputElement = React.createRef();
+  const inputFocus = () => inputElement.current.focus();
+
   const addTodo = text => {
     // const newTodos = [...todo, { text }];
     // setTodo(newTodos);
@@ -70,6 +71,7 @@ function TodoComponent(props) {
       props.insertTodo(text);
       setLoading(false);
     }, 500);
+    inputFocus();
   }
 
   const completeTodo = index => {
@@ -81,7 +83,7 @@ function TodoComponent(props) {
       props.checkTodo(index);
       setLoading(false);
     }, 500);
-    
+    inputFocus();
   }
 
   const removeTodo = index => {
@@ -93,24 +95,25 @@ function TodoComponent(props) {
       props.deleteTodo(index);
       setLoading(false);
     }, 500);
+    inputFocus();
   }
 
   const LoadingBar = () => (
     <>
-      <div className="loadingMask"></div>
-      <div className="loadingBar"><img src="./static/img/512x512.gif" /><h4>Loading...</h4></div>
+      <div className="loadingMask noselect"></div>
+      <div className="loadingBar noselect"><img src="./static/img/512x512.gif" alt="loading" /><h4>Loading...</h4></div>
     </>
   );
 
   return (
     <div className="App">
       <h2>Todo List</h2>
-      <div id="todo-list" className="todo-list">
-        {
+      {
           loading && <LoadingBar />
-        }
+      }
+      <div id="todo-list" className="todo-list">
         <TodoLists todoList={props.todoList} completeTodo={completeTodo} removeTodo={removeTodo} />
-        <TodoForm addTodo={addTodo} />
+        <TodoForm addTodo={addTodo} inputRef={inputElement} />
       </div>
     </div>
   );
