@@ -23,7 +23,7 @@ const Todo = ({ todo,  index, completeTodo, removeTodo }) => {
   );
 }
 
-const TodoForm = ({ addTodo, inputRef }) => {
+const TodoForm = ({ addTodo, inputRef, isLoading }) => {
   const [value, setValue] = useState('');
 
   // SUBMIT Event Handle
@@ -35,7 +35,7 @@ const TodoForm = ({ addTodo, inputRef }) => {
   }
   return (
     <form onSubmit={handleSubmit}>
-      <input type="text" className="input" value={value} onChange={e => setValue(e.target.value)} ref={inputRef}placeholder="Todo를 작성해 주세요." />
+      <input type="text" className="input" value={value} onChange={e => setValue(e.target.value)} disabled={isLoading} placeholder="Todo를 작성해 주세요." />
     </form>
   );
 }
@@ -60,9 +60,6 @@ function TodoComponent(props) {
   // const [todo, setTodo] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const inputElement = React.createRef();
-  const inputFocus = () => inputElement.current.focus();
-
   const addTodo = text => {
     // const newTodos = [...todo, { text }];
     // setTodo(newTodos);
@@ -71,7 +68,6 @@ function TodoComponent(props) {
       props.insertTodo(text);
       setLoading(false);
     }, 500);
-    inputFocus();
   }
 
   const completeTodo = index => {
@@ -83,7 +79,6 @@ function TodoComponent(props) {
       props.checkTodo(index);
       setLoading(false);
     }, 500);
-    inputFocus();
   }
 
   const removeTodo = index => {
@@ -95,7 +90,6 @@ function TodoComponent(props) {
       props.deleteTodo(index);
       setLoading(false);
     }, 500);
-    inputFocus();
   }
 
   const LoadingBar = () => (
@@ -113,7 +107,7 @@ function TodoComponent(props) {
       }
       <div id="todo-list" className="todo-list">
         <TodoLists todoList={props.todoList} completeTodo={completeTodo} removeTodo={removeTodo} />
-        <TodoForm addTodo={addTodo} inputRef={inputElement} />
+        <TodoForm addTodo={addTodo} isLoading={loading} />
       </div>
     </div>
   );
